@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "whisper-pwa-test": {
+      "hosting": {
+        "whisper-pwa": [
+          "whisper-pwa-test"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "whisper-pwa-test"
+  }
+}

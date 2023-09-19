@@ -1,0 +1,9 @@
+{
+  "hosting": [
+    {
+      "target": "whisper-pwa",
+      "source": ".",
+      "frameworksBackend": {}
+    }
+  ]
+}
