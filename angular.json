@@ -41,7 +41,7 @@
             "scripts": [],
             "serviceWorker": true,
             "ngswConfigPath": "ngsw-config.json",
-            "baseHref": "/web/"
+            "baseHref": "/app/"
           },
           "configurations": {
             "production": {
