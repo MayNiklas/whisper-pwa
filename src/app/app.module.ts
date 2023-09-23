@@ -10,11 +10,20 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 
 import { FileUploadModule } from 'ng2-file-upload';
+import { AppRoutingModule } from './app-routing.module';
+import { HomeComponent } from './home/home.component';
+import { LoginComponent } from './login/login.component';
+import { ShareTargetComponent } from './share-target/share-target.component';
+import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    HomeComponent,
+    LoginComponent,
+    ShareTargetComponent,
+    PageNotFoundComponent
   ],
   imports: [
     BrowserModule,
@@ -28,7 +37,8 @@ import { FileUploadModule } from 'ng2-file-upload';
     }),
     MatToolbarModule,
     MatIconModule,
-    FileUploadModule
+    FileUploadModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
