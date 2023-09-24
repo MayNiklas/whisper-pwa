@@ -15,15 +15,13 @@ self.addEventListener('fetch', event => {
             const clientId = event.resultingClientId !== "" ? event.resultingClientId : event.clientId;
             self.clients.get(clientId).then(client => {
 
-                // Get the images and video
+                // Get the audio
                 const audio = formData.getAll('audio');
-                const image = formData.getAll('image');
-                // Send them to the client
+                // Send it to the client
                 client.postMessage(
                     {
                         message: "newMedia",
-                        audio: audio,
-                        image: image
+                        audio: audio
                     }
                 );
 
