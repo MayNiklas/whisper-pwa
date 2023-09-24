@@ -19,6 +19,10 @@
         {
           "name": "audio",
           "accept": ["audio/*", ".mp3", ".wav", ".ogg"]
+        },
+        {
+          "name": "image",
+          "accept": ["image/*", ".jpg", ".jpeg", ".png", ".gif"]
         }
       ]
     }

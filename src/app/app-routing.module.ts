@@ -6,7 +6,8 @@ import { ShareTargetComponent } from './share-target/share-target.component';
 import { PageNotFoundComponent } from './page-not-found/page-not-found.component';
 
 const appRoutes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  { path: 'home', component: HomeComponent },
   { path: 'login', component: LoginComponent },
   { path: 'share-target', component: ShareTargetComponent },
   { path: '**', component: PageNotFoundComponent }
