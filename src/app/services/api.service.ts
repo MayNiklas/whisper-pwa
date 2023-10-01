@@ -1,6 +1,5 @@
-import { EventEmitter, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { FileUploader } from 'ng2-file-upload';
+import { Injectable } from '@angular/core';
+import { HttpClient, } from '@angular/common/http';
 
 import { environment as env } from 'src/environments/environment';
 import { ApiRoutes } from '../enums/api-routes';
@@ -15,29 +14,7 @@ const API_URL = env.apiUrl;
 })
 export class ApiService {
 
-  public transcribeUploader: FileUploader;
-
-  /*
-  public translateUploader: FileUploader;
-  */
-
-  constructor(private http: HttpClient) {
-
-    this.transcribeUploader = new FileUploader({
-      url: API_URL + ApiRoutes.Transcribe,
-      formatDataFunctionIsAsync: false,
-      autoUpload: true
-    });
-
-    /*
-    this.translateUploader = new FileUploader({
-      url: API_URL + ApiRoutes.Translate,
-      formatDataFunctionIsAsync: false,
-      autoUpload: true
-    });
-    */
-
-  }
+  constructor(private http: HttpClient) { }
 
   status(trc: Transcipt): Observable<Transcipt> {
     return new Observable<Transcipt>((observer) => {
@@ -46,7 +23,6 @@ export class ApiService {
           observer.next(res as Transcipt);
         },
         error(err) {
-          console.error('Unknown Error: ' + err);
           observer.error(err);
         },
         complete() {
@@ -57,15 +33,14 @@ export class ApiService {
   }
 
   transcribe(file: File): Observable<Transcipt> {
-    this.transcribeUploader.addToQueue([file]);
+    const formData = new FormData();
+    formData.append('file', file);
     return new Observable<Transcipt>((observer) => {
-      this.transcribeUploader.response.subscribe({
-        next(res: Object) {
-          const resObject = JSON.parse(res as string);
-          observer.next(resObject as Transcipt);
+      this.http.post(API_URL + ApiRoutes.Transcribe, formData).subscribe({
+        next(res) {
+          observer.next(res as Transcipt);
         },
-        error(err: any) {
-          console.error('Unknown Error: ' + err);
+        error(err) {
           observer.error(err);
         },
         complete() {
@@ -75,13 +50,20 @@ export class ApiService {
     });
   }
 
-  /*
-  translate(file: File) {
-    this.translateUploader.addToQueue([file]);
+  isAuthenticated(): Observable<boolean> {
+    return new Observable<boolean>((observer) => {
+      this.userInfo().subscribe({
+        next() { observer.next(true); },
+        error() { observer.next(false); }
+      });
+    });
   }
-  */
 
-  userinfo() {
+  translate(file: File) {
+    // TODO: implement
+  }
+
+  private userInfo() {
     return this.http.get(API_URL + ApiRoutes.UserInfo);
   }
 

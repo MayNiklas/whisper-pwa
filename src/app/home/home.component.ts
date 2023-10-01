@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
-import { FileUploader } from 'ng2-file-upload';
-import { NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
+import { interval, Subscription } from 'rxjs';
 
-import { Transcipt } from 'src/common/types';
+import { HistoryElement, Transcipt } from 'src/common/types';
 
 import { ApiService } from '../services/api.service';
 
@@ -14,65 +13,114 @@ import { ApiService } from '../services/api.service';
 })
 export class HomeComponent implements OnInit {
 
-  files: NgxFileDropEntry[] = [];
-
-  history: Transcipt[] = []; // TODO: reimplement as a service?
+  history: HistoryElement[] = []; // TODO: reimplement as a service/component?
 
   test_auth: string = 'UNTESTED';
 
+  secondInterval = interval(1000);
+  updateSubscription: Subscription = new Subscription();
+
   constructor(private api: ApiService) { }
 
-  ngOnInit(): void { }
-
-  reloadUnfinished() {
-    this.history.forEach(trc => {
-      if (trc.status != 'finished') {
-        this.api.status(trc).subscribe(res => {
-          this.history[this.history.indexOf(trc)] = res as Transcipt;
-        });
-      }
+  ngOnInit(): void {
+    this.updateSubscription = this.secondInterval.subscribe(() => {
+      this.reloadUnfinished();
     });
   }
 
-  public dropped(files: NgxFileDropEntry[]) {
-    this.files = files;
-    for (const droppedFile of files) {
+  ngOnDestroy() {
+    this.updateSubscription.unsubscribe();
+  }
 
-      // Is it a file?
-      if (droppedFile.fileEntry.isFile) {
-        const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
-        fileEntry.file((file: File) => {
+  reloadUnfinished() {
+    this.history.forEach(he => {
+      this.updateHistoryElement(he);
+    });
 
-          // Here you can access the real file
-          console.log(droppedFile.relativePath, file);
+  }
 
-          this.api.transcribe(file).subscribe(res => {
-            this.history.push(res as Transcipt);
-          });
+  addHistoryElement(trc: Transcipt) {
+    this.history.push(new HistoryElement(trc));
+  }
 
-          /**
-          // You could upload it like this:
-          const formData = new FormData()
-          formData.append('logo', file, relativePath)
-
-          // Headers
-          const headers = new HttpHeaders({
-            'security-token': 'mytoken'
-          })
-
-          this.http.post('https://mybackend.com/api/upload/sanitize-and-save-logo', formData, { headers: headers, responseType: 'blob' })
-          .subscribe(data => {
-            // Sanitized logo returned from backend
-          })
-          **/
-
-        });
-      } else {
-        // It was a directory (empty directories are added, otherwise only files)
-        const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
-        console.log(droppedFile.relativePath, fileEntry);
-      }
+  updateHistoryElement(he: HistoryElement) {
+    if (he.transcript.status != 'finished' && he.transcript.status != 'failed') {
+      this.api.status(he.transcript).subscribe(res => {
+        var trc: Transcipt = res as Transcipt;
+        var he_upd: HistoryElement = he;
+        he_upd.transcript = trc;
+        switch (trc.status) {
+          case 'new':
+            break;
+          case 'pending':
+            he_upd.short = 'Waiting...';
+            he_upd.pbar.mode = 'query';
+            he_upd.pbar.value = 0;
+            he_upd.pbar.color = 'accent';
+            break;
+          case 'processing':
+            he_upd.short = 'Processing...';
+            he_upd.pbar.mode = 'indeterminate';
+            he_upd.pbar.value = 0;
+            he_upd.pbar.color = 'primary';
+            break;
+          case 'finished':
+            he_upd.short = trc.transcript;
+            he_upd.pbar.show = false;
+            he_upd.pbar.mode = 'determinate';
+            he_upd.pbar.value = 100;
+            he_upd.pbar.color = 'primary';
+            break;
+          case 'failed':
+            he_upd.short = 'Failed';
+            he_upd.pbar.mode = 'determinate';
+            he_upd.pbar.value = 100;
+            he_upd.pbar.color = 'warn';
+            break;
+        }
+        this.history[this.history.indexOf(he)] = he_upd;
+      });
     }
   }
+
+  uploadFiles(files: File[]) {
+    for (const file of files) {
+      this.api.transcribe(file).subscribe(res => {
+        this.addHistoryElement(res as Transcipt); // multi-file problem is just the subscription firing multiple times
+      });
+    }
+  }
+
+  onFileSelected(event: any) {
+    this.uploadFiles(event.target.files);
+  }
+
+  async onPaste() {
+    navigator.clipboard.readText().then(text => {
+      var blob = new Blob([text], { type: 'text/plain' });
+      var file = new File([blob], 'clipboard.txt');
+      this.uploadFiles([file]);
+    });
+    try {
+      /*
+      const permission = await navigator.permissions.query({ name: "clipboard-read"  }); // TODO: check if this is needed
+      if (permission.state === "denied") {
+        throw new Error("Not allowed to read clipboard.");
+      }
+      */
+      const clipboardContents = await navigator.clipboard.read();
+      for (const item of clipboardContents) {
+        if (!item.types.includes("audio/*")) {
+          throw new Error("Clipboard contains non-audio data.");
+        }
+        const blob = await item.getType("audio/*");
+        const file = new File([blob], 'clipboard.' + blob.type.split('/')[1]);
+        this.uploadFiles([file]);
+      }
+    } catch (error: any) {
+      console.error(error.message);
+    }
+  }
+
 
 }

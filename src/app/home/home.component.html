@@ -1,61 +1,52 @@
+<input
+  type="file"
+  #fileInput
+  id="fileInput"
+  hidden
+  multiple
+  (change)="onFileSelected($event)"
+  accept="audio/*"
+/>
 
-<button type="button" (click)="reloadUnfinished()">Reload</button>
-<mat-divider></mat-divider>
+<div class="buttons">
+  <button
+    type="button"
+    mat-raised-button
+    color="primary"
+    (click)="fileInput.click()"
+  >
+    Choose Files
+    <mat-icon>upload</mat-icon>
+  </button>
 
-<table>
-  <thead>
-    <tr>
-      <th>task_id</th>
-      <th width="50%">transcript</th>
-      <th>lang</th>
-      <th>type</th>
-      <th>status</th>
-      <th>uploaded</th>
-      <th>duration</th>
-      <th>finished</th>
-      <th>target_size</th>
-      <th>used_size</th>
-      <th>device</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let trc of history">
-      <td>{{ trc.task_id }}</td>
-      <td>{{ trc.transcript }}</td>
-      <td>{{ trc.source_language }}</td>
-      <td>{{ trc.task_type }}</td>
-      <td>{{ trc.status }}</td>
-      <td>{{ trc.time_uploaded | date : "HH:mm:ss.SSS" }}</td>
-      <td>{{ trc.processing_duration }}</td>
-      <td>{{ trc.time_processing_finished | date : "HH:mm:ss.SSS" }}</td>
-      <td>{{ trc.target_model_size }}</td>
-      <td>{{ trc.used_model_size }}</td>
-      <td>{{ trc.used_device }}</td>
-    </tr>
-  </tbody>
-</table>
+  <button mat-raised-button color="primary" (click)="onPaste()">
+    Paste
+    <mat-icon>content_paste</mat-icon>
+  </button>
+</div>
 
-<mat-divider></mat-divider>
-
-<div class="center">
-  <ngx-file-drop dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)">
-      <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
-        Optional custom content that replaces the the entire default content.
-        <button type="button" (click)="openFileSelector()">Browse Files</button>
-      </ng-template>
-  </ngx-file-drop>
-  <div class="upload-table">
-      <table class="table">
-          <thead>
-              <tr>
-                  <th>Name</th>
-              </tr>
-          </thead>
-          <tbody class="upload-name-style">
-              <tr *ngFor="let item of files; let i=index">
-                  <td><strong>{{ item.relativePath }}</strong></td>
-              </tr>
-          </tbody>
-      </table>
-  </div>
+<div class="history">
+  <mat-accordion>
+    <ng-container *ngFor="let he of history.slice().reverse()">
+      <mat-expansion-panel [disabled]="!he.isDone()">
+        <mat-expansion-panel-header>
+          <mat-panel-title class="title">
+            {{ he.short }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+        <p class="date">
+          {{ he.transcript.time_uploaded | date : "short" }}
+        </p>
+        <p class="transcript">
+          {{ he.transcript.transcript }}
+        </p>
+      </mat-expansion-panel>
+      <mat-progress-bar
+        *ngIf="he.pbar.show"
+        [mode]="he.pbar.mode"
+        [value]="he.pbar.value"
+        [color]="he.pbar.color"
+      ></mat-progress-bar>
+    </ng-container>
+  </mat-accordion>
 </div>

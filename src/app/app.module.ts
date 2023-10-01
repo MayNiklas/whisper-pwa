@@ -8,9 +8,8 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDividerModule } from '@angular/material/divider';
-
-import { FileUploadModule } from 'ng2-file-upload';
-import { NgxFileDropModule } from 'ngx-file-drop';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -42,8 +41,8 @@ import { PageNotFoundComponent } from './page-not-found/page-not-found.component
     MatIconModule,
     MatButtonModule,
     MatDividerModule,
-    FileUploadModule,
-    NgxFileDropModule,
+    MatExpansionModule,
+    MatProgressBarModule,
     AppRoutingModule
   ],
   providers: [],

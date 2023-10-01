@@ -1,14 +1,21 @@
-.my-drop-zone {
-  border: dotted 3px lightgray;
-  height: 100px;
-  width: 200px;
+.history {
+  margin: 20px;
 }
 
-.nv-file-over {
-  border: dotted 3px red;
+.history .date {
+  color: #808080;
+  text-align: center;
 }
 
-th,
-td {
-  border: solid 1px black;
+.history .title {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin: 20px;
 }

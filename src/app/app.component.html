@@ -1,20 +1,17 @@
 <mat-toolbar>
   Whisper
-  <button mat-icon-button routerLink="home" color="primary">
-    <mat-icon>home</mat-icon>
-  </button>
+  <span class="spacer"></span>
   <button
     mat-icon-button
-    [routerLink]="['login', { redirect_path: currentPath() }]"
-    color="accent"
+    [routerLink]="['login', { redirect_path: redirectPath() }]"
+    color="primary"
   >
     <mat-icon>login</mat-icon>
   </button>
-  <button mat-icon-button routerLink="share-target" color="primary">
-    <mat-icon>share</mat-icon>
-  </button>
-  <button mat-icon-button routerLink="kein-echter-pfad" color="warn">
-    <mat-icon>bug_report</mat-icon>
+  <button mat-icon-button routerLink="home" color="primary">
+    <mat-icon>home</mat-icon>
   </button>
 </mat-toolbar>
-<router-outlet></router-outlet>
+<div class="container">
+  <router-outlet></router-outlet>
+</div>
