@@ -16,7 +16,7 @@ export class ShareTargetComponent implements OnInit {
 
     navigator.serviceWorker.addEventListener('message', (event: MessageEvent) => {
       this.test_outputs.push("Got message \n" + JSON.stringify(event.data));
-      if (event.data.hasOwnProperty('audio')) {
+      if (event.data.hasOwnProperty('audio') || event.data.hasOwnProperty('video')) {
         this.api.transcribe(event.data).subscribe(res => {
           this.test_outputs.push("Got response \n" + JSON.stringify(res));
         });

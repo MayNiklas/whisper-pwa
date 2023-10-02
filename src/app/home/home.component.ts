@@ -2,9 +2,10 @@ import { Component, OnInit } from '@angular/core';
 
 import { interval, Subscription } from 'rxjs';
 
+import { environment as env } from 'src/environments/environment';
 import { HistoryElement, Transcipt } from 'src/common/types';
-
 import { ApiService } from '../services/api.service';
+
 
 @Component({
   selector: 'app-home',
@@ -12,6 +13,8 @@ import { ApiService } from '../services/api.service';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
+
+  acceptedFileTypes: string = env.acceptedFileTypes;
 
   history: HistoryElement[] = []; // TODO: reimplement as a service/component?
 
@@ -110,10 +113,10 @@ export class HomeComponent implements OnInit {
       */
       const clipboardContents = await navigator.clipboard.read();
       for (const item of clipboardContents) {
-        if (!item.types.includes("audio/*")) {
-          throw new Error("Clipboard contains non-audio data.");
+        if (!item.types.includes(this.acceptedFileTypes)) {
+          throw new Error("Clipboard contains non-audio/video data.");
         }
-        const blob = await item.getType("audio/*");
+        const blob = await item.getType(this.acceptedFileTypes);
         const file = new File([blob], 'clipboard.' + blob.type.split('/')[1]);
         this.uploadFiles([file]);
       }

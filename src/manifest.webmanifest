@@ -18,8 +18,36 @@
       "files": [
         {
           "name": "audio",
-          "accept": ["audio/*", ".mp3", ".wav", ".ogg"]
+          "accept": [
+            "audio/*",
+            ".mp3",
+            ".ogg",
+            ".m4a",
+            ".aiff",
+            ".alac",
+            ".wma",
+            ".aac",
+            ".opus",
+            ".flac",
+            ".wav"
+          ]
+        },
+        {
+          "name": "video",
+          "accept":[
+            "video/*",
+            ".mp4",
+            ".webm",
+            ".mov",
+            ".mkv",
+            ".avi",
+            ".wmv",
+            ".m4v",
+            ".mpg",
+            ".mpeg"
+          ]
         }
+
       ]
     }
   },

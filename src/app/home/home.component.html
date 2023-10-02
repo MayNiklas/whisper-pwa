@@ -5,7 +5,7 @@
   hidden
   multiple
   (change)="onFileSelected($event)"
-  accept="audio/*"
+  [accept]="acceptedFileTypes"
 />
 
 <div class="buttons">
