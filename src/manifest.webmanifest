@@ -1,8 +1,8 @@
 {
-  "name": "whisper-pwa",
-  "short_name": "whisper-pwa",
-  "theme_color": "#1976d2",
-  "background_color": "#fafafa",
+  "name": "Whisper",
+  "short_name": "Whisper",
+  "theme_color": "#7062A5",
+  "background_color": "#020231",
   "description": "A simple PWA frontend for MayNiklas' whisper_api",
   "display": "standalone",
   "scope": "./",
@@ -53,6 +53,12 @@
   },
   "icons": [
     {
+      "src": "assets/icons/icon-48x48.png",
+      "sizes": "48x48",
+      "type": "image/png",
+      "purpose":"maskable any"
+    },
+    {
       "src": "assets/icons/icon-72x72.png",
       "sizes": "72x72",
       "type": "image/png",
@@ -99,6 +105,18 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-950x950.png",
+      "sizes": "950x950",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-monochrome.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "monochrome"
     }
   ]
 }
